@@ -250,8 +250,9 @@
 
         window.onload = () => {
             loadSavedInfo();
-            document.getElementById('btn-admin').onclick = () => alert('Tính năng ADMIND dành cho giáo viên để liên kết dữ liệu.');
-        };
+            document.getElementById('btn-admin').onclick = () => {
+    window.location.href = "admin.html";
+};
 
         function startGame(mode) {
             const info = {
@@ -568,5 +569,6 @@ window.db = db;
 </body>
 
 </html>
+
 
 
