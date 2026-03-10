@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game học tập KHTN 9 - Ôn tập Giữa học kì 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        // Cấu hình MathJax để nhận diện dấu $ cho công thức toán học nội dòng
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a365d;
+            margin: 0;
+            user-select: none;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-option {
+            transition: all 0.2s;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-option:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .btn-option.selected {
+            border-color: #2563eb;
+            background-color: #dbeafe;
+            font-weight: 600;
+        }
+
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .short-answer-input {
+            border-bottom: 2px solid #3b82f6;
+            outline: none;
+            padding: 5px;
+            font-size: 1.2rem;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Audio Elements -->
+    <audio id="sound-ping" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-finish" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Header info -->
+    <div id="game-header" class="hidden sticky top-0 z-50 bg-white shadow-md p-3 px-4 flex flex-wrap justify-between items-center text-sm md:text-base border-b-4 border-blue-600">
+        <div class="font-semibold">
+            <span id="header-name"></span> - <span id="header-sbd"></span> - Lớp <span id="header-class"></span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div id="timer-box" class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="timer">00:00</span>
+            </div>
+            <div class="text-blue-700 font-bold" id="progress-text">Câu 1/20</div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="main-container" class="flex-grow container mx-auto max-w-2xl p-4 flex flex-col justify-center">
+        
+        <!-- Welcome Screen -->
+        <div id="screen-welcome" class="card p-8 fade-in text-center">
+            <h1 class="text-3xl font-extrabold text-blue-800 mb-6 uppercase">Ôn tập KHTN 9 - Thấu kính & Điện trở</h1>
+            <p class="text-gray-600 mb-8">Chào mừng bạn đến với hệ thống ôn tập tương tác giữa học kì 2.</p>
+            
+            <div class="space-y-4 text-left max-w-md mx-auto mb-8">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Họ và tên</label>
+                    <input type="text" id="input-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" placeholder="Nhập tên của bạn">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Số báo danh</label>
+                        <input type="text" id="input-sbd" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Lớp</label>
+                        <input type="text" id="input-class" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Trường</label>
+                    <input type="text" id="input-school" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="startGame('practice')" class="bg-blue-100 text-blue-700 px-8 py-3 rounded-lg font-bold hover:bg-blue-200 transition">LUYỆN TẬP</button>
+                <button onclick="confirmTestMode()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition">LÀM BÀI KIỂM TRA</button>
+            </div>
+            
+            <button id="btn-admin" class="mt-8 text-xs text-gray-400 hover:text-blue-500 transition">ADMIND</button>
+        </div>
+
+        <!-- Warning Modal -->
+        <div id="modal-test-warning" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
+            <div class="bg-white p-6 rounded-xl max-w-sm w-full text-center shadow-2xl">
+                <h2 class="text-xl font-bold text-red-600 mb-4 uppercase">Cảnh báo quan trọng</h2>
+                <p class="text-gray-700 mb-6 font-semibold">"Nếu bạn rời khỏi trang làm bài, hệ thống sẽ tự động nộp bài."</p>
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('modal-test-warning').classList.add('hidden')" class="flex-1 bg-gray-200 py-2 rounded-lg font-bold">HỦY</button>
+                    <button onclick="startGame('test')" class="flex-1 bg-red-600 text-white py-2 rounded-lg font-bold">BẮT ĐẦU THI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question View -->
+        <div id="screen-quiz" class="hidden fade-in flex flex-col space-y-4 h-full">
+            <div class="card p-6 min-h-[400px] flex flex-col">
+                <div id="question-container" class="flex-grow">
+                    <!-- Dynamic Question Content -->
+                </div>
+                
+                <div class="mt-6 flex justify-between items-center">
+                    <button id="btn-prev" onclick="changeQuestion(-1)" class="bg-gray-100 text-gray-700 px-5 py-2 rounded-lg font-bold invisible hover:bg-gray-200">Quay lại</button>
+                    <button id="btn-next" onclick="changeQuestion(1)" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700">Tiếp</button>
+                    <button id="btn-submit" onclick="confirmSubmit()" class="hidden bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700">Nộp bài</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="screen-result" class="hidden fade-in card p-8 text-center">
+            <div id="result-header"></div>
+            <div class="my-8">
+                <div class="text-5xl font-extrabold text-blue-600 mb-2" id="result-score">0.0</div>
+                <div class="text-xl font-bold uppercase tracking-widest" id="result-rank">CHƯA ĐẠT</div>
+            </div>
+            <button onclick="showReview()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-4 transition">XEM CHI TIẾT ĐÁP ÁN</button>
+            <button onclick="location.reload()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-200 transition">THI LẠI</button>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="screen-review" class="hidden fade-in flex flex-col space-y-6 pb-12">
+            <h2 class="text-2xl font-bold text-center text-blue-800">Lịch sử làm bài</h2>
+            <div id="review-list" class="space-y-6"></div>
+            <button onclick="location.reload()" class="sticky bottom-4 mx-auto block bg-blue-600 text-white px-10 py-3 rounded-full font-bold shadow-2xl hover:scale-105 transition-transform">VỀ TRANG CHỦ</button>
+        </div>
+
+    </main>
+
+    <footer class="p-4 text-center text-xs text-gray-500">
+        Bản quyền thuộc về Trường THCS Thủy Phương, Thành phố Huế
+    </footer>
+
+    <script>
+        // --- DATA DEPOSIT (Sửa lỗi LaTeX, viết nguyên văn, KHÔNG VIẾT TẮT) ---
+        const QUESTION_BANK = {
+            mcq: [
+                { id: "TK.1", question: "Điểm nằm chính giữa thấu kính mà mọi tia sáng truyền qua nó đều tiếp tục truyền thẳng theo phương cũ được gọi là", options: ["tiêu điểm.", "trục chính.", "quang tâm.", "tiêu cự."], correctAnswer: 2, explanation: "Quang tâm $O$ là điểm nằm chính giữa thấu kính, mọi tia sáng truyền qua nó đều tiếp tục truyền thẳng theo phương cũ." },
+                { id: "TK.2", question: "Đường thẳng đi qua quang tâm và vuông góc với bề mặt thấu kính được gọi là", options: ["tiêu cự.", "trục chính.", "tiêu điểm.", "tia tới."], correctAnswer: 1, explanation: "Trục chính là đường thẳng đi qua quang tâm và vuông góc với bề mặt thấu kính." },
+                { id: "TK.3", question: "Thấu kính hội tụ là loại thấu kính có", options: ["phần rìa dày hơn phần giữa.", "phần rìa mỏng hơn phần giữa.", "độ dày toàn bộ thấu kính bằng nhau.", "hai mặt đều là mặt phẳng."], correctAnswer: 1, explanation: "Thấu kính hội tụ có phần rìa mỏng hơn phần giữa (thấu kính lồi)." },
+                { id: "TK.4", question: "Một chùm tia sáng tới song song với trục chính của thấu kính phân kì sẽ cho chùm tia ló", options: ["hội tụ tại tiêu điểm của thấu kính.", "truyền thẳng không bị lệch hướng.", "loe rộng ra (phân kì).", "song song với chùm tia tới."], correctAnswer: 2, explanation: "Thấu kính phân kì làm cho chùm tia tới song song trở thành chùm tia ló loe rộng ra (phân kì)." },
+                { id: "TK.5", question: "Đại lượng đặc trưng cho mức độ cản trở dòng điện của vật dẫn được gọi là", options: ["cường độ dòng điện.", "hiệu điện thế.", "điện trở.", "công suất điện."], correctAnswer: 2, explanation: "Điện trở là đại lượng đặc trưng cho mức độ cản trở dòng điện của vật dẫn." },
+                { id: "TK.6", question: "Trong hệ thống đơn vị đo lường đo lường quốc tế SI, đơn vị của điện trở là", options: ["Ampere (A).", "Volt (V).", "Ohm ($\\\\Omega$).", "Watt (W)."], correctAnswer: 2, explanation: "Đơn vị của điện trở là Ohm, kí hiệu là $\\\\Omega$." },
+                { id: "TK.7", question: "Kí hiệu của thấu kính hội tụ trên sơ đồ quang học là một đoạn thẳng có", options: ["hai đầu mũi tên hướng ra ngoài.", "hai đầu mũi tên hướng vào trong.", "một đầu mũi tên, một đầu gạch ngang.", "hai đầu gạch chéo."], correctAnswer: 0, explanation: "Kí hiệu thấu kính hội tụ là một đoạn thẳng có hai đầu mũi tên hướng ra ngoài." },
+                { id: "TK.8", question: "Kính lúp là dụng cụ quang học bổ trợ cho mắt để quan sát", options: ["các vật ở rất xa như các ngôi sao.", "các vật nhỏ mà mắt thường khó quan sát rõ.", "các vật nằm phía sau vật cản.", "cấu trúc bên trong của các nguyên tử."], correctAnswer: 1, explanation: "Kính lúp dùng để quan sát các vật nhỏ mà mắt thường khó quan sát rõ." },
+                { id: "TK.9", question: "Nội dung định luật Ohm cho biết cường độ dòng điện chạy qua một dây dẫn", options: ["tỉ lệ thuận với điện trở của dây dẫn đó.", "tỉ lệ nghịch với hiệu điện thế giữa hai đầu dây.", "tỉ lệ thuận với hiệu điện thế giữa hai đầu dây.", "KHÔNG phụ thuộc vào bản chất của dây dẫn."], correctAnswer: 2, explanation: "Định luật Ohm: Cường độ dòng điện tỉ lệ thuận với hiệu điện thế giữa hai đầu dây dẫn." },
+                { id: "TK.10", question: "Khi vật đặt ngoài khoảng tiêu cự của thấu kính hội tụ ($d > f$), ảnh của vật qua thấu kính là", options: ["ảnh ảo, cùng chiều với vật.", "ảnh thật, ngược chiều với vật.", "ảnh ảo, ngược chiều với vật.", "ảnh thật, cùng chiều với vật."], correctAnswer: 1, explanation: "Vật đặt ngoài tiêu cự của thấu kính hội tụ luôn cho ảnh thật, ngược chiều với vật." },
+                { id: "TK.15", question: "Nếu hiệu điện thế giữa hai đầu một dây dẫn tăng lên 3 lần thì cường độ dòng điện chạy qua dây dẫn đó sẽ", options: ["giảm đi 3 lần.", "tăng lên 3 lần.", "không thay đổi.", "tăng lên 9 lần."], correctAnswer: 1, explanation: "Cường độ dòng điện tỉ lệ thuận với hiệu điện thế, nên hiệu điện thế tăng 3 lần thì cường độ dòng điện tăng 3 lần." },
+                { id: "TK.21", question: "Đặt một hiệu điện thế $U = 12$ V vào hai đầu một điện trở $R = 40$ $\\\\Omega$. Cường độ dòng điện chạy qua điện trở là", options: ["0,4 A.", "0,3 A.", "3 A.", "4,8 A."], correctAnswer: 1, explanation: "$I = U / R = 12 / 40 = 0,3$ A." },
+                { id: "TK.22", question: "Một vật sáng AB cao 2 cm đặt vuông góc với trục chính của thấu kính hội tụ có tiêu cự $f = 10$ cm. Nếu vật cách thấu kính 20 cm ($d = 2f$) thì ảnh A'B' có độ cao là", options: ["1 cm.", "2 cm.", "4 cm.", "0,5 cm."], correctAnswer: 1, explanation: "Khi vật cách thấu kính khoảng $d = 2f$, ảnh thật có độ cao bằng vật ($2$ cm)." },
+                { id: "TK.24", question: "Trên một kính lúp có ghi 5X. Tiêu cự $f$ của kính lúp này là", options: ["2 cm.", "5 cm.", "10 cm.", "25 cm."], correctAnswer: 1, explanation: "$f = 25 / G = 25 / 5 = 5$ cm." },
+                { id: "TK.26", question: "Khi đặt vào hai đầu dây dẫn một hiệu điện thế 9 V thì cường độ dòng điện chạy qua nó là 0,9 A. Nếu hiệu điện thế đặt vào hai đầu dây dẫn đó tăng thêm 6 V thì cường độ dòng điện chạy qua nó là", options: ["1,5 A.", "1,8 A.", "0,45 A.", "0,6 A."], correctAnswer: 0, explanation: "Điện trở $R = 9 / 0,9 = 10$ $\\\\Omega$. Khi hiệu điện thế tăng thêm 6 V ($U = 15$ V), cường độ dòng điện là $I = 15 / 10 = 1,5$ A." }
+            ],
+            truefalse: [
+                { id: "TK.31", context: "Xét một vật sáng AB đặt vuông góc với trục chính của một thấu kính hội tụ có tiêu cự $f$.", statements: [
+                    { text: "Tia tới song song với trục chính thì tia ló đi qua tiêu điểm ảnh $F'$.", correct: true },
+                    { text: "Nếu vật AB nằm trong khoảng tiêu cự, ta không thể quan sát được ảnh bằng mắt.", correct: false },
+                    { text: "Để dựng ảnh $A'B'$, ta có thể sử dụng tia tới qua quang tâm $O$ và tia tới song song trục chính.", correct: true },
+                    { text: "Ảnh của vật tạo bởi thấu kính hội tụ luôn luôn là ảnh thật và ngược chiều với vật.", correct: false }
+                ], explanation: "b) Sai vì khi vật nằm trong khoảng tiêu cự, thấu kính tạo ảnh ảo, mắt vẫn có thể nhìn thấy. d) Sai vì nếu vật nằm trong tiêu cự thì thấu kính hội tụ cho ảnh ảo." },
+                { id: "TK.32", context: "Một đoạn mạch có điện trở $R$ không đổi, hiệu điện thế giữa hai đầu đoạn mạch là $U$.", statements: [
+                    { text: "Cường độ dòng điện $I$ tỉ lệ thuận với hiệu điện thế $U$.", correct: true },
+                    { text: "Khi điện trở $R$ tăng lên 2 lần và $U$ giữ nguyên thì cường độ dòng điện $I$ tăng 2 lần.", correct: false },
+                    { text: "Đơn vị của cường độ dòng điện $I$ là Volt, đơn vị của điện trở $R$ là Ohm.", correct: false },
+                    { text: "Công thức của định luật Ohm được viết là $I = U/R$.", correct: true }
+                ], explanation: "b) Sai vì $I$ tỉ lệ nghịch với $R$. c) Sai vì đơn vị của $I$ là Ampe (A)." },
+                { id: "TK.34", context: "Cho vật sáng AB đặt vuông góc với trục chính, trước thấu kính phân kì, cho ảnh A'B'.", statements: [
+                    { text: "Tia tới song song với trục chính cho tia ló có đường kéo dài đi qua tiêu điểm $F$.", correct: true },
+                    { text: "Thấu kính phân kì có thể tạo ra ảnh thật nếu vật đặt rất xa thấu kính.", correct: false },
+                    { text: "Ảnh A'B' qua thấu kính phân kì luôn luôn là ảnh ảo, cùng chiều và nhỏ hơn vật.", correct: true },
+                    { text: "Khi đưa vật AB lại gần thấu kính phân kì, ảnh ảo A'B' sẽ càng nhỏ đi.", correct: false }
+                ], explanation: "b) Sai vì thấu kính phân kì luôn tạo ảnh ảo với vật thật. d) Sai vì khi đưa vật lại gần thấu kính, ảnh ảo sẽ lớn dần lên." },
+                { id: "TK.35", context: "Đồ thị biểu diễn cường độ dòng điện theo hiệu điện thế của hai điện trở $R_1$ và $R_2$ là hai đường thẳng đi qua gốc tọa độ, đường $R_1$ dốc hơn đường $R_2$.", statements: [
+                    { text: "Với cùng một hiệu điện thế $U$, cường độ dòng điện qua $R_1$ lớn hơn qua $R_2$.", correct: true },
+                    { text: "Điện trở $R_1$ có giá trị lớn hơn điện trở $R_2$.", correct: false },
+                    { text: "Nếu $U = 0$ V thì cường độ dòng điện qua cả hai điện trở đều bằng 0 A.", correct: true },
+                    { text: "Tỉ số $U/I$ đối với mỗi điện trở là một đại lượng không đổi.", correct: true }
+                ], explanation: "b) Sai vì đường thẳng dốc hơn có giá trị $I$ lớn hơn tại cùng $U$, nghĩa là điện trở $R$ phải nhỏ hơn." }
+            ],
+            short: [
+                { id: "TK.39", question: "Một bóng đèn có điện trở $24$ $\\\\Omega$ được thắp sáng bởi nguồn điện có hiệu điện thế $12$ V. Cường độ dòng điện chạy qua đèn là bao nhiêu Ampe?", answer: "0,5", explanation: "$I = U / R = 12 / 24 = 0,5$ A." },
+                { id: "TK.41", question: "Một người dùng kính lúp có số bội giác $2,5$X để quan sát một con tem. Tiêu cự của kính lúp này là bao nhiêu centimet?", answer: "10", explanation: "$f = 25 / G = 25 / 2,5 = 10$ cm." },
+                { id: "TK.43", question: "Một vật sáng AB đặt vuông góc với trục chính của thấu kính hội tụ có tiêu cự $f = 12$ cm. Vật cách thấu kính $24$ cm. Khoảng cách từ ảnh A'B' đến thấu kính là bao nhiêu centimet?", answer: "24", explanation: "Vật cách thấu kính $d = 24$ cm $= 2f$ nên ảnh thật cách thấu kính $d' = 24$ cm." },
+                { id: "TK.45", question: "Nếu tăng hiệu điện thế giữa hai đầu điện trở thêm $3$ V thì cường độ dòng điện tăng thêm $0,1$ A. Điện trở của dây dẫn này bằng bao nhiêu Ohm?", answer: "30", explanation: "$R = \\\\Delta U / \\\\Delta I = 3 / 0,1 = 30$ $\\\\Omega$." }
+            ]
+        };
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {};
+        let timerInterval;
+        let isFinished = false;
+        let currentMode = 'practice';
+
+        function loadSavedInfo() {
+            if (localStorage.getItem('student_info')) {
+                const info = JSON.parse(localStorage.getItem('student_info'));
+                document.getElementById('input-name').value = info.name || '';
+                document.getElementById('input-sbd').value = info.sbd || '';
+                document.getElementById('input-class').value = info.class || '';
+                document.getElementById('input-school').value = info.school || '';
+            }
+        }
+
+        window.onload = () => {
+            loadSavedInfo();
+            document.getElementById('btn-admin').onclick = () => alert('Tính năng ADMIND dành cho giáo viên để liên kết dữ liệu.');
+        };
+
+        function startGame(mode) {
+            const info = {
+                name: document.getElementById('input-name').value,
+                sbd: document.getElementById('input-sbd').value,
+                class: document.getElementById('input-class').value,
+                school: document.getElementById('input-school').value
+            };
+            if (!info.name || !info.sbd) {
+                alert('Vui lòng nhập đầy đủ thông tin Họ tên và Số báo danh!');
+                return;
+            }
+            localStorage.setItem('student_info', JSON.stringify(info));
+            currentMode = mode;
+
+            document.getElementById('modal-test-warning').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('game-header').classList.remove('hidden');
+
+            document.getElementById('header-name').innerText = info.name;
+            document.getElementById('header-sbd').innerText = info.sbd;
+            document.getElementById('header-class').innerText = info.class;
+
+            generateTest();
+            renderQuestion();
+
+            if (mode === 'test') {
+                enableAntiCheat();
+                enterFullScreen();
+            }
+        }
+
+        function confirmTestMode() {
+            document.getElementById('modal-test-warning').classList.remove('hidden');
+        }
+
+        function generateTest() {
+            const mcqs = shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map(q => ({...q, type: 'mcq'}));
+            const tfs = shuffle([...QUESTION_BANK.truefalse]).slice(0, 4).map(q => ({...q, type: 'truefalse'}));
+            const shorts = shuffle([...QUESTION_BANK.short]).slice(0, 4).map(q => ({...q, type: 'short'}));
+            currentQuestions = [...mcqs, ...tfs, ...shorts];
+            currentIndex = 0;
+            userAnswers = {};
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuestion() {
+            if (!currentQuestions[currentIndex]) return;
+            const q = currentQuestions[currentIndex];
+            const container = document.getElementById('question-container');
+            container.innerHTML = '';
+            
+            document.getElementById('progress-text').innerText = `Câu ${currentIndex + 1}/20`;
+            resetTimer(q.type);
+
+            let partText = "";
+            if (currentIndex < 12) {
+                partText = "Phần I. Trắc nghiệm khách quan dạng NHIỀU LỰA CHỌN (3 điểm)";
+            } else if (currentIndex < 16) {
+                partText = "Phần II. Trắc nghiệm khách quan dạng đúng / sai (2 điểm)";
+            } else {
+                partText = "Phần III. Trắc nghiệm khách quan dạng TRẢ LỜI NGẮN (2 điểm)";
+            }
+
+            const qTitle = document.createElement('div');
+            qTitle.className = "mb-4 text-lg font-bold text-blue-900";
+            qTitle.innerHTML = `<span class="text-xs block text-blue-500 mb-1 uppercase font-semibold">${partText}</span>Câu ${currentIndex + 1}. ${q.question || q.context || ''}`;
+            container.appendChild(qTitle);
+
+            if (q.type === 'mcq') {
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = "btn-option w-full p-4 text-left rounded-xl mb-2 flex items-center " + (userAnswers[currentIndex] === idx ? 'selected' : '');
+                    btn.innerHTML = `<span class="shrink-0 inline-block w-8 h-8 rounded-full bg-blue-100 text-blue-700 text-center leading-8 font-bold mr-3">${String.fromCharCode(65 + idx)}</span> <span class="flex-grow">${opt}</span>`;
+                    btn.onclick = () => { userAnswers[currentIndex] = idx; playSound('ping'); renderQuestion(); };
+                    container.appendChild(btn);
+                });
+            } else if (q.type === 'truefalse') {
+                q.statements.forEach((st, idx) => {
+                    const item = document.createElement('div');
+                    item.className = "p-3 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2";
+                    item.innerHTML = `
+                        <div class="flex-grow text-sm"><span class="font-bold">${String.fromCharCode(97 + idx)})</span> ${st.text}</div>
+                        <div class="flex gap-2">
+                            <button onclick="selectTF(${idx}, true)" class="px-4 py-1 rounded border font-bold text-xs ${userAnswers[currentIndex]?.[idx] === true ? 'bg-green-600 text-white' : 'bg-white text-green-600 border-green-600'}">ĐÚNG</button>
+                            <button onclick="selectTF(${idx}, false)" class="px-4 py-1 rounded border font-bold text-xs ${userAnswers[currentIndex]?.[idx] === false ? 'bg-red-600 text-white' : 'bg-white text-red-600 border-red-600'}">SAI</button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            } else if (q.type === 'short') {
+                const wrap = document.createElement('div');
+                wrap.className = "mt-8";
+                wrap.innerHTML = `
+                    <label class="block text-center text-sm text-gray-500 mb-4 font-semibold">Nhập đáp án không quá 4 kí tự, dùng dấu phẩy (,) đối với số thập phân, ví dụ: 2,3</label>
+                    <input type="text" id="short-input" maxlength="4" class="short-answer-input" value="${userAnswers[currentIndex] || ''}" oninput="userAnswers[currentIndex]=this.value">
+                `;
+                container.appendChild(wrap);
+                setTimeout(() => {
+                    const el = document.getElementById('short-input');
+                    if (el) el.focus();
+                }, 100);
+            }
+
+            document.getElementById('btn-prev').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            if (currentIndex === currentQuestions.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+
+            // Gọi MathJax để cập nhật các công thức mới được thêm vào DOM
+            if (window.MathJax) {
+                MathJax.typesetPromise([container]).catch((err) => console.log(err.message));
+            }
+        }
+
+        function selectTF(idx, val) {
+            if (!userAnswers[currentIndex]) userAnswers[currentIndex] = {};
+            userAnswers[currentIndex][idx] = val;
+            playSound('ping');
+            renderQuestion();
+        }
+
+        function changeQuestion(dir) {
+            currentIndex += dir;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= currentQuestions.length) currentIndex = currentQuestions.length - 1;
+            renderQuestion();
+        }
+
+        function resetTimer(type) {
+            clearInterval(timerInterval);
+            let seconds = type === 'mcq' ? 90 : 120;
+            updateTimerUI(seconds);
+            timerInterval = setInterval(() => {
+                seconds--;
+                updateTimerUI(seconds);
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    if (currentIndex < currentQuestions.length - 1) changeQuestion(1);
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            document.getElementById('timer').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function confirmSubmit() {
+            if (confirm('Bạn có chắc chắn muốn nộp bài?')) finishGame();
+        }
+
+        function calculateScore() {
+            let total = 0;
+            currentQuestions.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                if (q.type === 'mcq') {
+                    if (ans === q.correctAnswer) total += 0.25;
+                } else if (q.type === 'truefalse') {
+                    let correctCount = 0;
+                    if (ans) {
+                        q.statements.forEach((st, sIdx) => {
+                            if (ans[sIdx] === st.correct) correctCount++;
+                        });
+                    }
+                    if (correctCount === 1) total += 0.0625;
+                    else if (correctCount === 2) total += 0.125;
+                    else if (correctCount === 3) total += 0.25;
+                    else if (correctCount === 4) total += 0.5;
+                } else if (q.type === 'short') {
+                    if (ans && ans.toString().trim().replace(',', '.') === q.answer.toString().replace(',', '.')) {
+                        total += 0.5;
+                    }
+                }
+            });
+            return total;
+        }
+
+        function finishGame() {
+            if (isFinished) return;
+            isFinished = true;
+            clearInterval(timerInterval);
+            playSound('finish');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('game-header').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            const score = calculateScore();
+            const rawInfo = localStorage.getItem('student_info');
+            const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
+            
+            document.getElementById('result-header').innerHTML = `
+                <h2 class="text-xl">Chúc mừng thí sinh</h2>
+                <div class="text-2xl font-bold text-blue-800">${info.name} (SBD: ${info.sbd})</div>
+                <p class="text-gray-600">${info.class} - ${info.school}</p>
+                <p class="mt-2">Đã hoàn thành bài ôn tập Khoa học tự nhiên 9</p>
+            `;
+            document.getElementById('result-score').innerText = score.toFixed(1);
+            
+            let rank = "CHƯA ĐẠT";
+            if (score >= 6) rank = "XUẤT SẮC";
+            else if (score >= 5) rank = "GIỎI";
+            else if (score >= 4) rank = "KHÁ";
+            else if (score >= 3) rank = "ĐẠT";
+            document.getElementById('result-rank').innerText = rank;
+        }
+
+        function isCorrect(q, ans) {
+            if (q.type === 'mcq') return ans === q.correctAnswer;
+            if (q.type === 'short') return ans && ans.toString().trim().replace(',', '.') === q.answer.toString().replace(',', '.');
+            if (q.type === 'truefalse') {
+                if (!ans) return false;
+                let c = 0; q.statements.forEach((s, i) => { if (ans[i] === s.correct) c++; });
+                return c === 4;
+            }
+            return false;
+        }
+
+        function showReview() {
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-review').classList.remove('hidden');
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+            currentQuestions.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                const card = document.createElement('div');
+                card.className = "card p-6 border-l-8 " + (isCorrect(q, ans) ? 'border-green-500' : 'border-red-500');
+                
+                let content = `<div class="font-bold text-blue-900 mb-2">Câu ${idx+1}. ${q.question || q.context}</div>`;
+                
+                if (q.type === 'mcq') {
+                    q.options.forEach((opt, oIdx) => {
+                        let style = "";
+                        if (oIdx === q.correctAnswer) style = "bg-green-100 border-green-500 font-semibold";
+                        else if (ans === oIdx) style = "bg-red-100 border-red-500";
+                        content += `<div class="p-2 border rounded mb-1 text-sm ${style}">${String.fromCharCode(65+oIdx)}. ${opt} ${ans === oIdx ? '(Bạn chọn)' : ''} ${oIdx === q.correctAnswer ? ' (Đáp án đúng)' : ''}</div>`;
+                    });
+                } else if (q.type === 'truefalse') {
+                    q.statements.forEach((st, si) => {
+                        const correctVal = st.correct ? "Đúng" : "Sai";
+                        const userVal = ans ? (ans[si] === true ? "Đúng" : (ans[si] === false ? "Sai" : "Chưa chọn")) : "Chưa chọn";
+                        content += `<div class="text-xs p-2 mb-1 border rounded flex justify-between ${ans && ans[si] === st.correct ? 'bg-green-50' : 'bg-red-50'}"><span>${st.text}</span> <span class="font-bold shrink-0 ml-2">Bạn: ${userVal} | ĐS: ${correctVal}</span></div>`;
+                    });
+                } else if (q.type === 'short') {
+                    content += `<p class="text-sm">Bạn nhập: <b>${ans || 'Trống'}</b> | Đáp án đúng: <b class="text-green-600">${q.answer}</b></p>`;
+                }
+
+                content += `<div class="mt-3 p-3 bg-blue-50 text-xs italic rounded"><b>Giải thích:</b> ${q.explanation}</div>`;
+                card.innerHTML = content;
+                list.appendChild(card);
+            });
+            if (window.MathJax) MathJax.typesetPromise([list]).catch((err) => console.log(err.message));
+        }
+
+        function playSound(id) {
+            try {
+                const sound = document.getElementById('sound-' + id);
+                if (sound) {
+                    sound.currentTime = 0;
+                    const playPromise = sound.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => { console.warn("Audio error:", error); });
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function enableAntiCheat() {
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && currentMode === 'test' && !isFinished) { alert("Bạn đã rời trang! Hệ thống tự động nộp bài."); finishGame(); }
+            });
+            window.onblur = () => { if (currentMode === 'test' && !isFinished) finishGame(); };
+        }
+
+        function enterFullScreen() {
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && currentMode === 'test' && !isFinished) { alert("Thoát toàn màn hình! Hệ thống tự động nộp bài."); finishGame(); }
+            });
+        }
+    </script>
+</body>
+</html>
