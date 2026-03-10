@@ -495,7 +495,26 @@ else if (score >= 3) rank = "ĐẠT";
 
 document.getElementById('result-rank').innerText = rank;
         }
+function isCorrect(q, ans) {
+    if (q.type === 'mcq') {
+        return ans === q.correctAnswer;
+    }
 
+    if (q.type === 'short') {
+        return ans && ans.toString().trim().replace(',', '.') === q.answer.toString().replace(',', '.');
+    }
+
+    if (q.type === 'truefalse') {
+        if (!ans) return false;
+        let correct = 0;
+        q.statements.forEach((s, i) => {
+            if (ans[i] === s.correct) correct++;
+        });
+        return correct === 4;
+    }
+
+    return false;
+}
         function showReview() {
             document.getElementById('screen-result').classList.add('hidden');
             document.getElementById('screen-review').classList.remove('hidden');
@@ -580,6 +599,7 @@ window.db = db;
 </body>
 
 </html>
+
 
 
 
