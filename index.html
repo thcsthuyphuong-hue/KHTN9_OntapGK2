@@ -123,7 +123,7 @@
                 <button onclick="confirmTestMode()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition">LÀM BÀI KIỂM TRA</button>
             </div>
             
-            <button id="btn-admin" class="mt-8 text-xs text-gray-400 hover:text-blue-500 transition">ADMIND</button>
+            <button id="btn-admin" class="mt-8 text-xs text-gray-400 hover:text-blue-500 transition">ADMIN</button>
         </div>
 
         <!-- Warning Modal -->
@@ -494,14 +494,6 @@ else if (score >= 4) rank = "KHÁ";
 else if (score >= 3) rank = "ĐẠT";
 
 document.getElementById('result-rank').innerText = rank;
-            if (q.type === 'mcq') return ans === q.correctAnswer;
-            if (q.type === 'short') return ans && ans.toString().trim().replace(',', '.') === q.answer.toString().replace(',', '.');
-            if (q.type === 'truefalse') {
-                if (!ans) return false;
-                let c = 0; q.statements.forEach((s, i) => { if (ans[i] === s.correct) c++; });
-                return c === 4;
-            }
-            return false;
         }
 
         function showReview() {
@@ -588,6 +580,7 @@ window.db = db;
 </body>
 
 </html>
+
 
 
 
