@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Quản lý kết quả học sinh</title>
+<title>Bảng xếp hạng học sinh</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -16,67 +16,36 @@
 <body class="bg-gray-100 p-6">
 
 <h1 class="text-2xl font-bold text-blue-700 mb-6">
-
 📊 BẢNG XẾP HẠNG HỌC SINH
-
 </h1>
 
+<div class="flex gap-4 mb-6">
 
-
-<div class="flex flex-wrap gap-4 mb-6">
-
-<select id="filterClass" class="border p-2 rounded">
-
-<option value="">Tất cả lớp</option>
-
-<option value="9/1">9/1</option>
-
-<option value="9/2">9/2</option>
-
-<option value="9/3">9/3</option>
-
-</select>
-
-
+<select id="filterClass" class="border p-2 rounded"></select>
 
 <button onclick="loadData()" class="bg-blue-600 text-white px-4 py-2 rounded">
-
 Lọc
-
 </button>
 
-
-
 <button onclick="exportExcel()" class="bg-green-600 text-white px-4 py-2 rounded">
-
 Xuất Excel
-
 </button>
 
 </div>
 
-
-
-<table class="w-full bg-white rounded shadow">
+<table class="w-full bg-white shadow rounded">
 
 <thead class="bg-blue-600 text-white">
 
 <tr>
 
 <th class="p-2">Hạng</th>
-
 <th class="p-2">Tên</th>
-
 <th class="p-2">SBD</th>
-
 <th class="p-2">Lớp</th>
-
 <th class="p-2">Trường</th>
-
 <th class="p-2">Điểm</th>
-
-<th class="p-2">Thời gian làm bài (phút)</th>
-
+<th class="p-2">Thời gian làm bài (giây)</th>
 <th class="p-2">Thời gian nộp bài</th>
 
 </tr>
@@ -89,70 +58,44 @@ Xuất Excel
 
 
 
-
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 
 import {
-
 getFirestore,
-
 collection,
-
 getDocs
-
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
+}
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
 apiKey: "AIzaSyC5zISc-3_Fc-NZRrqrA4OezGGNR3j6kMQ",
-
 authDomain: "khtn9-ontapgk2.firebaseapp.com",
-
 projectId: "khtn9-ontapgk2",
-
 storageBucket: "khtn9-ontapgk2.appspot.com",
-
 messagingSenderId: "1054675478842",
-
 appId: "1:1054675478842:web:54e8bb2dbf3e5aec6c0803"
 
 };
-
 
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-
-
 let allData = [];
 
 
 
-window.loadData = async function() {
-
-const table = document.getElementById("resultTable");
-
-table.innerHTML = "";
-
-
-
-const filterClass = document.getElementById("filterClass").value;
-
-
+async function init(){
 
 const querySnapshot = await getDocs(collection(db,"results"));
 
-
-
 allData = [];
-
-
 
 querySnapshot.forEach(doc => {
 
@@ -160,25 +103,59 @@ allData.push(doc.data());
 
 });
 
+createClassFilter();
 
-
-if(filterClass){
-
-allData = allData.filter(d => d.class == filterClass);
+loadData();
 
 }
 
 
 
-allData.sort((a,b) => b.score - a.score);
+function createClassFilter(){
+
+const select = document.getElementById("filterClass");
+
+select.innerHTML = `<option value="">Tất cả lớp</option>`;
+
+const classes = [...new Set(allData.map(d=>d.class))];
+
+classes.sort();
+
+classes.forEach(c=>{
+
+select.innerHTML += `<option value="${c}">${c}</option>`;
+
+});
+
+}
 
 
 
-allData.forEach((d,i) => {
+window.loadData = function(){
 
-const submit = new Date(d.submitTime).toLocaleString("vi-VN");
+const table = document.getElementById("resultTable");
+
+table.innerHTML = "";
+
+const filterClass = document.getElementById("filterClass").value;
+
+let data = [...allData];
+
+if(filterClass){
+
+data = data.filter(d=>d.class==filterClass);
+
+}
 
 
+data.sort((a,b)=>b.score-a.score);
+
+
+data.forEach((d,i)=>{
+
+const submitTime = d.submitTime
+? new Date(d.submitTime).toLocaleString("vi-VN")
+: "";
 
 table.innerHTML += `
 
@@ -186,19 +163,19 @@ table.innerHTML += `
 
 <td class="p-2 font-bold">${i+1}</td>
 
-<td class="p-2">${d.name}</td>
+<td class="p-2">${d.name||""}</td>
 
-<td class="p-2">${d.sbd}</td>
+<td class="p-2">${d.sbd||""}</td>
 
-<td class="p-2">${d.class}</td>
+<td class="p-2">${d.class||""}</td>
 
-<td class="p-2">${d.school}</td>
+<td class="p-2">${d.school||""}</td>
 
-<td class="p-2 font-bold text-blue-700">${d.score}</td>
+<td class="p-2 font-bold text-blue-700">${d.score||0}</td>
 
-<td class="p-2">${d.duration}</td>
+<td class="p-2">${d.duration||0}</td>
 
-<td class="p-2 text-xs">${submit}</td>
+<td class="p-2 text-xs">${submitTime}</td>
 
 </tr>
 
@@ -212,29 +189,23 @@ table.innerHTML += `
 
 window.exportExcel = function(){
 
-let csv = "Hạng,Tên,SBD,Lớp,Trường,Điểm,Thời gian làm bài (phút),Thời gian nộp\n";
+let csv = "Hạng,Tên,SBD,Lớp,Trường,Điểm,Thời gian làm bài (giây),Thời gian nộp bài\n";
 
-
-
-allData.forEach((d,i) => {
+allData.forEach((d,i)=>{
 
 csv += `${i+1},${d.name},${d.sbd},${d.class},${d.school},${d.score},${d.duration},${d.submitTime}\n`;
 
 });
 
-
-
 const blob = new Blob([csv],{type:"text/csv"});
 
 const url = window.URL.createObjectURL(blob);
-
-
 
 const a = document.createElement("a");
 
 a.href = url;
 
-a.download = "ketqua_khtn9.csv";
+a.download = "ketqua_hocsinh.csv";
 
 a.click();
 
@@ -242,11 +213,9 @@ a.click();
 
 
 
-loadData();
+init();
 
 </script>
-
-
 
 </body>
 
