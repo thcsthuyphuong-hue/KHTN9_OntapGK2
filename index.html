@@ -454,14 +454,20 @@
             document.getElementById('game-header').classList.add('hidden');
             document.getElementById('screen-result').classList.remove('hidden');
 
-            const score = calculateScore();
-            const rawInfo = localStorage.getItem('student_info');
-const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
+           const score = calculateScore();
 
-if(window.db){
+const rawInfo = localStorage.getItem('student_info');
+const info = rawInfo ? JSON.parse(rawInfo) : {
+    name: "Thí sinh",
+    sbd: "N/A",
+    class: "N/A",
+    school: "N/A"
+};
+
+if (window.db) {
     import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js")
-    .then(({collection, addDoc})=>{
-        addDoc(collection(db,"results"),{
+    .then(({ collection, addDoc }) => {
+        addDoc(collection(db, "results"), {
             name: info.name,
             sbd: info.sbd,
             class: info.class,
@@ -472,40 +478,22 @@ if(window.db){
     });
 }
 
-if(window.db){
-    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js")
-    .then(({collection, addDoc})=>{
-        addDoc(collection(db,"results"),{
-            name: info.name,
-            sbd: info.sbd,
-            class: info.class,
-            school: info.school,
-            score: score,
-            time: new Date().toISOString()
-        });
-    });
-}
-            
-            const rawInfo = localStorage.getItem('student_info');
-            const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
-            
-            document.getElementById('result-header').innerHTML = `
-                <h2 class="text-xl">Chúc mừng thí sinh</h2>
-                <div class="text-2xl font-bold text-blue-800">${info.name} (SBD: ${info.sbd})</div>
-                <p class="text-gray-600">${info.class} - ${info.school}</p>
-                <p class="mt-2">Đã hoàn thành bài ôn tập Khoa học tự nhiên 9</p>
-            `;
-            document.getElementById('result-score').innerText = score.toFixed(1);
-            
-            let rank = "CHƯA ĐẠT";
-            if (score >= 6) rank = "XUẤT SẮC";
-            else if (score >= 5) rank = "GIỎI";
-            else if (score >= 4) rank = "KHÁ";
-            else if (score >= 3) rank = "ĐẠT";
-            document.getElementById('result-rank').innerText = rank;
-        }
+document.getElementById('result-header').innerHTML = `
+    <h2 class="text-xl">Chúc mừng thí sinh</h2>
+    <div class="text-2xl font-bold text-blue-800">${info.name} (SBD: ${info.sbd})</div>
+    <p class="text-gray-600">${info.class} - ${info.school}</p>
+    <p class="mt-2">Đã hoàn thành bài ôn tập Khoa học tự nhiên 9</p>
+`;
 
-        function isCorrect(q, ans) {
+document.getElementById('result-score').innerText = score.toFixed(1);
+
+let rank = "CHƯA ĐẠT";
+if (score >= 6) rank = "XUẤT SẮC";
+else if (score >= 5) rank = "GIỎI";
+else if (score >= 4) rank = "KHÁ";
+else if (score >= 3) rank = "ĐẠT";
+
+document.getElementById('result-rank').innerText = rank;
             if (q.type === 'mcq') return ans === q.correctAnswer;
             if (q.type === 'short') return ans && ans.toString().trim().replace(',', '.') === q.answer.toString().replace(',', '.');
             if (q.type === 'truefalse') {
@@ -600,6 +588,7 @@ window.db = db;
 </body>
 
 </html>
+
 
 
 
