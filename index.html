@@ -453,7 +453,23 @@
             document.getElementById('game-header').classList.add('hidden');
             document.getElementById('screen-result').classList.remove('hidden');
 
-            const score = calculateScore();
+            const score = calculateScore();const rawInfo = localStorage.getItem('student_info');
+const info = rawInfo ? JSON.parse(rawInfo) : {};
+
+if(window.db){
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js")
+    .then(({collection, addDoc})=>{
+        addDoc(collection(db,"results"),{
+            name: info.name,
+            sbd: info.sbd,
+            class: info.class,
+            school: info.school,
+            score: score,
+            time: new Date().toISOString()
+        });
+    });
+}
+            
             const rawInfo = localStorage.getItem('student_info');
             const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
             
@@ -569,6 +585,7 @@ window.db = db;
 </body>
 
 </html>
+
 
 
 
