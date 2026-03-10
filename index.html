@@ -123,7 +123,7 @@
                 <button onclick="confirmTestMode()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition">LÀM BÀI KIỂM TRA</button>
             </div>
             
-            <button id="btn-admin" class="mt-8 text-xs text-gray-400 hover:text-blue-500 transition">ADMIND</button>
+            <button id="btn-admin" class="mt-8 text-xs text-gray-400 hover:text-blue-500 transition">ADMIN</button>
         </div>
 
         <!-- Warning Modal -->
@@ -250,7 +250,7 @@
 
         window.onload = () => {
             loadSavedInfo();
-            document.getElementById('btn-admin').onclick = () => alert('Tính năng ADMIND dành cho giáo viên để liên kết dữ liệu.');
+            document.getElementById('btn-admin').onclick = () => alert('Tính năng ADMIN dành cho giáo viên để liên kết dữ liệu.');
         };
 
         function startGame(mode) {
@@ -569,3 +569,4 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 </body>
 </html>
+
