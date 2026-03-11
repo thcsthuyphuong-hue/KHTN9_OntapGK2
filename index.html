@@ -161,7 +161,7 @@
                 <div class="text-xl font-bold uppercase tracking-widest" id="result-rank">CHƯA ĐẠT</div>
             </div>
             <button onclick="showReview()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-4 transition">XEM CHI TIẾT ĐÁP ÁN</button>
-            <button onclick="location.reload()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-200 transition">THI LẠI</button>
+            <button onclick="isFinished=false; startGame(currentMode)" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-200 transition">LÀM LẠI BÀI (GIỮ THÔNG TIN)</button>
         </div>
 
         <!-- Review Screen -->
@@ -296,21 +296,46 @@
         }
 
         function generateTest() {
-            const mcqs = shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map(q => ({...q, type: 'mcq'}));
-            const tfs = shuffle([...QUESTION_BANK.truefalse]).slice(0, 4).map(q => ({...q, type: 'truefalse'}));
-            const shorts = shuffle([...QUESTION_BANK.short]).slice(0, 4).map(q => ({...q, type: 'short'}));
-            currentQuestions = [...mcqs, ...tfs, ...shorts];
-            currentIndex = 0;
-            userAnswers = {};
-        }
+    // 1. Xáo trộn và lấy câu hỏi từ ngân hàng (đảm bảo mỗi lần làm là câu mới)
+    const rawMcqs = shuffle(QUESTION_BANK.mcq).slice(0, 12);
+    const rawTfs = shuffle(QUESTION_BANK.truefalse).slice(0, 4);
+    const rawShorts = shuffle(QUESTION_BANK.short).slice(0, 4);
+
+    // 2. Xáo trộn phương án A, B, C, D và cập nhật lại đáp án đúng tương ứng
+    const mcqs = rawMcqs.map(q => {
+        // Tạo mảng đối tượng kèm chỉ số gốc để theo vết đáp án đúng
+        let optionsWithIndex = q.options.map((opt, i) => ({ text: opt, originalIndex: i }));
+        optionsWithIndex = shuffle(optionsWithIndex); 
+            // Tìm vị trí mới của đáp án đúng sau khi xáo
+        const newCorrectAnswer = optionsWithIndex.findIndex(o => o.originalIndex === q.correctAnswer);
+          return { 
+            ...q, 
+            type: 'mcq', 
+            options: optionsWithIndex.map(o => o.text), 
+            correctAnswer: newCorrectAnswer 
+        };
+    });
+    // 3. Xáo trộn các ý a, b, c, d trong câu hỏi Đúng/Sai
+    const tfs = rawTfs.map(q => ({
+        ...q,
+        type: 'truefalse',
+        statements: shuffle(q.statements)
+    }));
+    const shorts = rawShorts.map(q => ({ ...q, type: 'short' }));
+    // Gộp lại thành bộ đề hoàn chỉnh
+    currentQuestions = [...mcqs, ...tfs, ...shorts];
+    currentIndex = 0;
+    userAnswers = {};
+}
 
         function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+    let newArray = [...array]; // Tạo bản sao mảng để xáo trộn độc lập
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
 
         function renderQuestion() {
             if (!currentQuestions[currentIndex]) return;
@@ -663,6 +688,7 @@ window.saveResult = async function(data){
 </div>
 </body>
 </html>
+
 
 
 
