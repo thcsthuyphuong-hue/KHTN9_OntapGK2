@@ -249,13 +249,21 @@
         }
 
        window.onload = () => {
+    window.onload = () => {
     loadSavedInfo();
 
     document.getElementById('btn-admin').onclick = () => {
-        window.location.href = "admin.html";
+
+        const password = prompt("Nhập mật khẩu ADMIN:");
+
+        if(password === "112233@@"){
+            window.location.href = "admin.html";
+        }else if(password !== null){
+            alert("Sai mật khẩu!");
+        }
+
     };
 };
-
         function startGame(mode) {
             const info = {
                 name: document.getElementById('input-name').value,
@@ -572,6 +580,7 @@ window.db = db;
 </script>
 </body>
 </html>
+
 
 
 
