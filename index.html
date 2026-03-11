@@ -209,8 +209,13 @@
         { id: "TK.26", question: "Đặt hiệu điện thế 9V vào dây dẫn thì $I = 0,9$ A. Nếu tăng thêm 6V thì cường độ dòng điện là", options: ["1,5 A.", "1,8 A.", "0,45 A.", "0,6 A."], correctAnswer: 0, explanation: "$R = 10 \\\\Omega$; khi $U=15$ V thì $I=1,5$ A[cite: 155, 157]." },
         { id: "TK.27", question: "Một dây dẫn dài $l$ có điện trở $18$ $\\\\Omega$. Nếu cắt dây làm 3 phần bằng nhau thì điện trở mỗi phần là", options: ["54 $\\\\Omega$.", "6 $\\\\Omega$.", "21 $\\\\Omega$.", "15 $\\\\Omega$."], correctAnswer: 1, explanation: "$R$ tỉ lệ thuận với chiều dài[cite: 161, 164]." },
         { id: "TK.28", question: "Công thức xác định điện trở của một dây dẫn hình trụ, đồng chất là", options: ["$R = \\\\rho \\\\cdot l / S$.", "$R = \\\\rho \\\\cdot S / l$.", "$R = S \\\\cdot l / \\\\rho$.", "$R = \\\\rho \\\\cdot l \\\\cdot S$."], correctAnswer: 0, explanation: "Công thức điện trở dây dẫn[cite: 167, 171]." },
-        { id: "TK.29", question: "Một đoạn dây đồng có tiết diện tròn, đường kính 1mm, dài 314cm. Điện trở của dây là (biết $\\\\rho = 1,7 \\\\cdot 10^{-8} \\\\Omega m$)", options: ["3,4 $\\\\Omega$.", "1,7 $\\\\Omega$.", "0,034 $\\\\Omega$.", "0,068 $\\\\Omega$."], correctAnswer: 3, explanation: "Tính toán dựa trên công thức điện trở[cite: 172, 177]." },
-        { id: "TK.30", question: "Một đoạn dây dẫn bằng đồng dài 18m, tiết diện $3mm^2$. Điện trở của đoạn dây là ($\\\\rho = 1,7 \\\\cdot 10^{-8} \\\\Omega m$)", options: ["0,102 $\\\\Omega$.", "0,325 $\\\\Omega$.", "0,204 $\\\\Omega$.", "0,92 $\\\\Omega$."], correctAnswer: 0, explanation: "Tính toán điện trở[cite: 178, 180]." }
+        { 
+  id: "TK.29", 
+  question: "Một đoạn dây đồng có tiết diện tròn, đường kính 1mm, dài 314cm. Điện trở của dây là (biết $\\rho = 1,7 \\cdot 10^{-8} \\Omega m$)", 
+  options: ["3,4 $\\Omega$.", "1,7 $\\Omega$.", "0,034 $\\Omega$.", "0,068 $\\Omega$."], 
+  correctAnswer: 3, 
+  explanation: "Sử dụng công thức $R = \\rho \\frac{l}{S}$." 
+},        { id: "TK.30", question: "Một đoạn dây dẫn bằng đồng dài 18m, tiết diện $3mm^2$. Điện trở của đoạn dây là ($\\\\rho = 1,7 \\\\cdot 10^{-8} \\\\Omega m$)", options: ["0,102 $\\\\Omega$.", "0,325 $\\\\Omega$.", "0,204 $\\\\Omega$.", "0,92 $\\\\Omega$."], correctAnswer: 0, explanation: "Tính toán điện trở[cite: 178, 180]." }
     ],
     truefalse: [
         { 
@@ -756,4 +761,5 @@ window.saveResult = async function(data){
 </div>
 </body>
 </html>
+
 
