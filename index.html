@@ -255,6 +255,8 @@
     document.getElementById('btn-admin').onclick = () => {
     document.getElementById("admin-modal").classList.remove("hidden");
 };
+          };
+        
         function startGame(mode) {
             const info = {
                 name: document.getElementById('input-name').value,
@@ -548,6 +550,8 @@
             });
         }
     </script>
+    <script>
+
 function checkAdminPassword(){
 
     const pass = document.getElementById("admin-password").value;
@@ -563,6 +567,8 @@ function checkAdminPassword(){
 function closeAdmin(){
     document.getElementById("admin-modal").classList.add("hidden");
 }
+
+</script>
 <!-- Firebase -->
 <script type="module">
 
@@ -612,6 +618,7 @@ window.db = db;
 </div>
 </body>
 </html>
+
 
 
 
