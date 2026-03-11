@@ -255,6 +255,7 @@
     document.getElementById("btn-admin").onclick = function(){
         document.getElementById("admin-modal").classList.remove("hidden");
     };
+            };
         
         function startGame(mode) {
             const info = {
@@ -457,6 +458,22 @@
 
             const score = calculateScore();
             const rawInfo = localStorage.getItem('student_info');
+const info = rawInfo ? JSON.parse(rawInfo) : {};
+            const submitData = {
+name: info.name,
+sbd: info.sbd,
+class: info.class,
+school: info.school,
+score: score,
+duration: 0,
+submitTime: Date.now()
+};
+            
+
+if(window.saveResult){
+saveResult(submitData);
+}
+            const rawInfo = localStorage.getItem('student_info');
             const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
             
             document.getElementById('result-header').innerHTML = `
@@ -572,8 +589,7 @@ function closeAdmin(){
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyC5zISc-3_Fc-NZRrqrA4OezGGNR3j6kMQ",
   authDomain: "khtn9-ontapgk2.firebaseapp.com",
@@ -587,6 +603,21 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.db = db;
 </script>
+    window.saveResult = async function(data){
+
+try{
+
+await addDoc(collection(db,"results"),data);
+
+console.log("Đã lưu kết quả");
+
+}catch(e){
+
+console.error("Lỗi lưu Firebase:",e);
+
+}
+
+}
     <!-- ADMIN LOGIN -->
 <div id="admin-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[200]">
   <div class="bg-white p-6 rounded-xl shadow-xl w-80">
@@ -617,6 +648,7 @@ window.db = db;
 </div>
 </body>
 </html>
+
 
 
 
