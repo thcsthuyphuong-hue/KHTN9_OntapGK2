@@ -616,6 +616,21 @@ console.error("Lỗi lưu Firebase:",e);
 }
 
 }
+    <script type="module">
+
+import { addDoc, collection } 
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+window.saveResult = async function(data){
+   try{
+      await addDoc(collection(window.db,"results"), data);
+      console.log("Saved to Firebase");
+   }catch(e){
+      console.error("Firebase error:", e);
+   }
+}
+
+</script>
     <!-- ADMIN LOGIN -->
 <div id="admin-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[200]">
   <div class="bg-white p-6 rounded-xl shadow-xl w-80">
@@ -646,6 +661,7 @@ console.error("Lỗi lưu Firebase:",e);
 </div>
 </body>
 </html>
+
 
 
 
