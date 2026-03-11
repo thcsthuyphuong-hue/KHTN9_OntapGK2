@@ -473,8 +473,6 @@ submitTime: Date.now()
 if(window.saveResult){
 saveResult(submitData);
 }
-            const rawInfo = localStorage.getItem('student_info');
-            const info = rawInfo ? JSON.parse(rawInfo) : { name: "Thí sinh", sbd: "N/A", class: "N/A", school: "N/A" };
             
             document.getElementById('result-header').innerHTML = `
                 <h2 class="text-xl">Chúc mừng thí sinh</h2>
@@ -648,6 +646,7 @@ console.error("Lỗi lưu Firebase:",e);
 </div>
 </body>
 </html>
+
 
 
 
