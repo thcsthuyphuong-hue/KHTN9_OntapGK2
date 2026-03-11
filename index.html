@@ -237,6 +237,7 @@
         let timerInterval;
         let isFinished = false;
         let currentMode = 'practice';
+        let startTime = 0;
 
         function loadSavedInfo() {
             if (localStorage.getItem('student_info')) {
@@ -271,6 +272,7 @@
             localStorage.setItem('student_info', JSON.stringify(info));
             currentMode = mode;
 
+        startTime = Date.now();
             document.getElementById('modal-test-warning').classList.add('hidden');
             document.getElementById('screen-welcome').classList.add('hidden');
             document.getElementById('screen-quiz').classList.remove('hidden');
@@ -459,16 +461,16 @@
             const score = calculateScore();
             const rawInfo = localStorage.getItem('student_info');
 const info = rawInfo ? JSON.parse(rawInfo) : {};
-            const submitData = {
+            const duration = Math.floor((Date.now() - startTime) / 1000);
+               const submitData = {
 name: info.name,
 sbd: info.sbd,
 class: info.class,
 school: info.school,
 score: score,
-duration: 0,
+duration: duration,
 submitTime: Date.now()
-};
-            
+};        
 
 if(window.saveResult){
 saveResult(submitData);
@@ -661,6 +663,7 @@ window.saveResult = async function(data){
 </div>
 </body>
 </html>
+
 
 
 
