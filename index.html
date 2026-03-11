@@ -248,14 +248,13 @@
             }
         }
 
-      window.onload = () => {
+     window.onload = function(){
 
     loadSavedInfo();
 
-    document.getElementById('btn-admin').onclick = () => {
-    document.getElementById("admin-modal").classList.remove("hidden");
-};
-          };
+    document.getElementById("btn-admin").onclick = function(){
+        document.getElementById("admin-modal").classList.remove("hidden");
+    };
         
         function startGame(mode) {
             const info = {
@@ -618,6 +617,7 @@ window.db = db;
 </div>
 </body>
 </html>
+
 
 
 
