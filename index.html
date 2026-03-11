@@ -253,17 +253,7 @@
     loadSavedInfo();
 
     document.getElementById('btn-admin').onclick = () => {
-
-        const password = prompt("Nhập mật khẩu ADMIN:");
-
-        if(password === "112233@@"){
-            window.location.href = "admin.html";
-        }else if(password !== null){
-            alert("Sai mật khẩu!");
-        }
-
-    };
-
+    document.getElementById("admin-modal").classList.remove("hidden");
 };
         function startGame(mode) {
             const info = {
@@ -558,7 +548,21 @@
             });
         }
     </script>
+function checkAdminPassword(){
 
+    const pass = document.getElementById("admin-password").value;
+
+    if(pass === "112233@@"){
+        window.location.href = "admin.html";
+    }else{
+        alert("Sai mật khẩu!");
+    }
+
+}
+
+function closeAdmin(){
+    document.getElementById("admin-modal").classList.add("hidden");
+}
 <!-- Firebase -->
 <script type="module">
 
@@ -578,8 +582,37 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.db = db;
 </script>
+    <!-- ADMIN LOGIN -->
+<div id="admin-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[200]">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-80">
+
+    <h2 class="text-lg font-bold mb-4 text-center text-blue-700">
+      Đăng nhập ADMIN
+    </h2>
+
+    <input 
+      type="password"
+      id="admin-password"
+      placeholder="Nhập mật khẩu"
+      class="w-full border p-2 rounded mb-4"
+    >
+
+    <div class="flex gap-2">
+      <button onclick="checkAdminPassword()" 
+        class="flex-1 bg-blue-600 text-white py-2 rounded">
+        OK
+      </button>
+
+      <button onclick="closeAdmin()" 
+        class="flex-1 bg-gray-300 py-2 rounded">
+        Hủy
+      </button>
+    </div>
+       </div>
+</div>
 </body>
 </html>
+
 
 
 
