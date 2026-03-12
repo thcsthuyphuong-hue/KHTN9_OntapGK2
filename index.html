@@ -218,9 +218,32 @@ const QUESTION_BANK = {
  correctAnswer:1,
  explanation:"Điện trở tỉ lệ thuận với chiều dài nên khi chia 3 thì R = 18/3 = 6 Ω."
 }
-        { id: "TK.28", question: "Công thức xác định điện trở của một dây dẫn hình trụ, đồng chất là", options: ["$R = \\\\rho \\\\frac{l}{S}$.", "$R = \\\\rho \\\\frac{S}{l}$.", "$R = \\\\frac{S \\\\cdot l}{\\\\rho}$.", "$R = \\\\rho \\\\cdot l \\\\cdot S$."], correctAnswer: 0, explanation: "Điện trở của dây dẫn tỉ lệ thuận với chiều dài, tỉ lệ nghịch với tiết diện." },
-        { id: "TK.29", question: "Một đoạn dây đồng tiết diện tròn, đường kính $1$mm, dài $314$cm. Điện trở của dây là (biết $\\\\rho = 1,7 \\\\cdot 10^{-8} \\\\Omega m$, $\\\\pi = 3,14$)", options: ["$3,4$ $\\\\Omega$.", "$1,7$ $\\\\Omega$.", "$0,034$ $\\\\Omega$.", "$0,068$ $\\\\Omega$."], correctAnswer: 3, explanation: "Tiết diện $S = \\\\pi \\\\frac{d^2}{4}$. Áp dụng $R = \\\\rho \\\\frac{l}{S}$ tính ra $\\\\approx 0,068 \\\\Omega$." },
-        { id: "TK.30", question: "Một đoạn dây dẫn bằng đồng dài $18$m, tiết diện $3 mm^2$. Điện trở của đoạn dây là ($\\\\rho = 1,7 \\\\cdot 10^{-8} \\\\Omega m$)", options: ["$0,102$ $\\\\Omega$.", "$0,325$ $\\\\Omega$.", "$0,204$ $\\\\Omega$.", "$0,92$ $\\\\Omega$."], correctAnswer: 0, explanation: "$R = 1,7 \\\\cdot 10^{-8} \\\\cdot \\\\frac{18}{3 \\\\cdot 10^{-6}} = 0,102 \\\\Omega$." }
+        {
+ id:"TK.28",
+ question:"Công thức xác định điện trở của một dây dẫn hình trụ đồng chất là",
+ options:[
+ "R = ρl/S",
+ "R = ρS/l",
+ "R = Sl/ρ",
+ "R = ρlS"
+ ],
+ correctAnswer:0,
+ explanation:"Điện trở tỉ lệ thuận với chiều dài và tỉ lệ nghịch với tiết diện."
+}
+        {
+ id:"TK.29",
+ question:"Một đoạn dây đồng tiết diện tròn, đường kính 1 mm, dài 314 cm. Điện trở của dây là (ρ = 1,7 × 10⁻⁸ Ωm, π = 3,14)",
+ options:["3,4 Ω","1,7 Ω","0,034 Ω","0,068 Ω"],
+ correctAnswer:3,
+ explanation:"S = πd²/4. Áp dụng R = ρl/S ≈ 0,068 Ω."
+}
+        {
+ id:"TK.30",
+ question:"Một đoạn dây dẫn bằng đồng dài 18 m, tiết diện 3 mm². Điện trở của đoạn dây là (ρ = 1,7 × 10⁻⁸ Ωm)",
+ options:["0,102 Ω","0,325 Ω","0,204 Ω","0,92 Ω"],
+ correctAnswer:0,
+ explanation:"R = ρl/S = 1,7 × 10⁻⁸ × 18 / (3 × 10⁻⁶) = 0,102 Ω."
+}
     ],
     truefalse: [
         { 
@@ -767,6 +790,7 @@ window.saveResult = async function(data){
 </div>
 </body>
 </html>
+
 
 
 
