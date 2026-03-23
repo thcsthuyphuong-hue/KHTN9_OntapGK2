@@ -50,8 +50,7 @@
                     <th class="p-3 text-center border">Ngày nộp</th>
                 </tr>
             </thead>
-            <tbody id="result-tbody">
-                </tbody>
+            <tbody id="result-tbody"></tbody>
         </table>
     </div>
 
@@ -59,21 +58,21 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
+        // ✅ CONFIG CŨ (đã fix format)
         const firebaseConfig = {
-              apiKey: "AIzaSyDg4Q6rsrvPhY31oCpL4DAAjTKlgjJN1c0",
-              authDomain: "khtn9-5c1f4.firebaseapp.com",
-              projectId: "khtn9-5c1f4",
-              storageBucket: "khtn9-5c1f4.firebasestorage.app",
-              messagingSenderId: "498407772914",
-              appId: "1:498407772914:web:6d07ae107a73d4b342366b",
-              measurementId: "G-7MRG6Z7XZB"
-            };
+          apiKey: "AIzaSyC5zISc-3_FcNZRrqrA4OezGGNR3j6kMQ",
+          authDomain: "khtn9-ontapgk2.firebaseapp.com",
+          projectId: "khtn9-ontapgk2",
+          storageBucket: "khtn9-ontapgk2.appspot.com",
+          messagingSenderId: "1054675478842",
+          appId: "1:1054675478842:web:54e8bb2dbf3e5aec6c0803"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let allResults = [];
         let displayedResults = [];
 
-        // 1. Hàm lấy dữ liệu từ Firebase
         async function fetchData() {
             const tbody = document.getElementById('result-tbody');
             tbody.innerHTML = '<tr><td colspan="8" class="p-10 text-center">Đang tải dữ liệu...</td></tr>';
@@ -93,7 +92,6 @@
             }
         }
 
-        // 2. Cập nhật danh sách lớp vào Select
         function updateClassFilter() {
             const select = document.getElementById("filterClass");
             const classes = [...new Set(allResults.map(item => item.class))].filter(Boolean).sort();
@@ -103,15 +101,12 @@
             });
         }
 
-        // 3. Hàm Sắp xếp, Lọc và Hiển thị
         window.renderTable = function() {
             const sortType = document.getElementById('sort-type').value;
             const filterClass = document.getElementById('filterClass').value;
             
-            // Lọc dữ liệu theo lớp
             let data = filterClass ? allResults.filter(item => item.class === filterClass) : [...allResults];
 
-            // Sắp xếp dữ liệu
             data.sort((a, b) => {
                 switch(sortType) {
                     case 'score_desc': return (b.score || 0) - (a.score || 0);
@@ -123,7 +118,7 @@
                 }
             });
 
-            displayedResults = data; // Lưu lại để xuất Excel đúng những gì đang thấy
+            displayedResults = data;
             const tbody = document.getElementById('result-tbody');
             tbody.innerHTML = '';
 
@@ -149,7 +144,6 @@
             });
         }
 
-        // 4. Hàm xuất Excel
         window.exportExcel = function() {
             if (displayedResults.length === 0) {
                 alert("Không có dữ liệu để xuất!");
@@ -171,7 +165,6 @@
             XLSX.writeFile(workbook, "bang_xep_hang_hoc_sinh.xlsx");
         }
 
-        // Khởi chạy lấy dữ liệu lần đầu
         fetchData();
         window.fetchData = fetchData;
 
